@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About | Betwixt Book List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- PROXIMA NOVA: paste the same Adobe Fonts <link> you added to index.html here. -->
+<style>
+@font-face{font-family:"SlimSansSerif";src:url("fonts/SlimSansSerif-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+:root{--ink:#16141a;--mute:#6b6874;--accent:#F30650;--glow:0 0 2px 2px rgba(243,6,80,.5);--r:6px;
+--display:"SlimSansSerif","Figtree",system-ui,sans-serif;--sans:"proxima-nova","Proxima Nova","Figtree",system-ui,sans-serif}
+*{box-sizing:border-box}
+html{scrollbar-gutter:stable}
+body{margin:0;background:#fff;color:var(--ink);font:16px/1.6 var(--sans)}
+main{max-width:680px;margin:0 auto;padding:72px 24px 96px}
+.site{display:inline-block;margin-bottom:24px;color:var(--mute);font-weight:600;text-decoration:none}
+.site:hover{text-decoration:underline;text-underline-offset:4px}
+h1{font:700 clamp(1.75rem,8.5vw,3.5rem)/1.05 var(--display);letter-spacing:-.01em;margin:0 0 20px;white-space:nowrap}
+h2{font:700 1.6rem/1.15 var(--display);letter-spacing:-.01em;margin:40px 0 8px}
+p{margin:0 0 16px;font-size:1.05rem;max-width:60ch}
+.menu{display:flex;flex-wrap:wrap;gap:8px 28px;margin:0 0 40px}
+.menu a{color:var(--ink);font-weight:600;text-decoration:none;padding:4px 0}
+.menu a:hover{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px;text-decoration-color:var(--accent)}
+.menu a[aria-current]{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+.btn{display:inline-block;padding:11px 20px;border:1.5px solid var(--ink);border-radius:var(--r);background:var(--accent);border-color:var(--accent);color:#000;font-weight:600;text-decoration:none}
+.btn:hover{box-shadow:var(--glow)}
+a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<a class="site" href="index.html">Betwixt Book List</a>
+<h1>About</h1>
+<nav class="menu" aria-label="Site">
+<a href="index.html">Books</a>
+<a href="about.html" aria-current="page">About</a>
+<a href="https://lnkfi.re/btx" target="_blank" rel="noopener">The podcast<span style="position:absolute;left:-9999px"> (opens in a new tab)</span></a>
+<a href="feedback.html">Feedback</a>
+</nav>
+<p>This website is dedicated to listing all of the books promoted and mentioned on the History Hit podcast, <a href="https://lnkfi.re/btx" target="_blank" rel="noopener">Betwixt the Sheets</a>. This website is not affiliated with History Hit and is a personal project.</p>
+</main>
+</body>
+</html>
