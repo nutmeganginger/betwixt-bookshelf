@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Betwixt Book List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- PROXIMA NOVA: paste your Adobe Fonts project <link> here (see instructions). Until then, Figtree is used as a close stand-in. -->
+<style>
+@font-face{font-family:"SlimSansSerif";src:url("fonts/SlimSansSerif-Bold.ttf") format("truetype");font-weight:700;font-style:normal;font-display:swap}
+:root{--ink:#16141a;--mute:#6b6874;--line:#e8e6ec;--bg:#fff;--soft:#f6f5f8;--accent:#F30650;--r:6px;
+--display:"SlimSansSerif","Figtree",system-ui,sans-serif;--sans:"proxima-nova","Proxima Nova","Figtree",system-ui,sans-serif}
+*{box-sizing:border-box}
+html{scrollbar-gutter:stable}
+html.lock,html.lock body{overflow:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans)}
+button,input{font-family:inherit}
+header{max-width:1200px;margin:0 auto;padding:72px 24px 32px}
+h1{font:700 clamp(1.75rem,8.5vw,4.5rem)/1.05 var(--display);letter-spacing:-.01em;margin:0 0 16px;white-space:nowrap}
+header p{margin:0 0 32px;color:var(--mute);font:400 1.1rem/1.5 var(--sans);max-width:52ch}
+.search{display:block;width:100%;max-width:420px;padding:12px 16px;border:1.5px solid var(--ink);border-radius:var(--r);font:inherit;background:#fff}
+.search:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+#count{margin:12px 0 0;font-size:.9rem;color:var(--mute)}
+main{max-width:1200px;margin:0 auto;padding:16px 24px 96px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:40px 24px;list-style:none;margin:0;padding:0}
+.book{all:unset;display:block;cursor:pointer;width:100%}
+.cover{aspect-ratio:2/3;border-radius:3px;overflow:hidden;background:var(--soft);box-shadow:0 1px 2px rgba(0,0,0,.2),0 8px 16px -8px rgba(0,0,0,.25);transition:transform .2s}
+.book:hover .cover{transform:translateY(-4px)}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.ph{height:100%;padding:14px;display:flex;flex-direction:column;justify-content:space-between;color:#000;background:var(--accent);font:700 .95rem/1.2 var(--sans)}
+.ph span{font:500 .8rem var(--sans)}
+.title{margin:12px 0 2px;font-weight:700;font-size:.95rem;line-height:1.25}
+.by{color:var(--mute);font-size:.85rem}
+.empty{padding:48px 0;color:var(--mute)}
+dialog{border:0;padding:0;border-radius:10px;max-width:760px;width:calc(100% - 32px);max-height:calc(100% - 32px);color:var(--ink);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+dialog{overscroll-behavior:contain}
+dialog::backdrop{background:rgba(22,20,26,.6)}
+.m{display:grid;grid-template-columns:240px 1fr;gap:32px;padding:32px;position:relative}
+.m .cover{box-shadow:0 10px 24px -8px rgba(0,0,0,.4)}
+.m h2{font:700 1.7rem/1.1 var(--display);letter-spacing:-.01em;margin:0 0 6px}
+.m .by{font-size:1rem;margin-bottom:16px}
+.desc{font:400 1rem/1.6 var(--sans);max-height:240px;overflow:auto;margin:0 0 20px;padding-right:8px}
+.m h3{font:700 1rem var(--sans);margin:0 0 10px}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links a{padding:9px 16px;border:1.5px solid var(--ink);border-radius:var(--r);color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem}
+.links a:hover,.links a:focus-visible{background:var(--accent);border-color:var(--accent);color:#000}
+.x{position:absolute;top:10px;right:10px;width:40px;height:40px;border:0;border-radius:50%;background:var(--soft);font-size:1.4rem;cursor:pointer;color:var(--ink)}
+@media(max-width:1000px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:760px){.grid{grid-template-columns:repeat(3,1fr);gap:32px 16px}}
+@media(max-width:600px){.m{grid-template-columns:1fr;padding:24px}.m .cover{max-width:180px}.grid{grid-template-columns:repeat(2,1fr);gap:28px 16px}header{padding-top:48px}}
+.top{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;align-items:center;height:48px;padding:0 13px;border:0;border-radius:24px;background:var(--accent);color:#000;font:600 .95rem var(--sans);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .2s,transform .2s,visibility .2s}
+.top.show{opacity:1;visibility:visible;transform:none}
+.top svg{flex:none;width:22px;height:22px}
+.top span{max-width:0;overflow:hidden;white-space:nowrap;opacity:0;margin-left:0;transition:max-width .25s ease,opacity .2s,margin .25s}
+.top:hover span,.top:focus-visible span{max-width:110px;opacity:1;margin-left:8px}
+.top:hover,.top:focus-visible{background:#000;color:#fff}
+@media(prefers-reduced-motion:reduce){.cover,.top,.top span{transition:none}}
+</style>
+</head>
+<body>
+<header>
+<h1 tabindex="-1" style="outline:none">Betwixt Book List</h1>
+<p>Books mentioned and promoted on Betwixt the Sheets, a History Hit podcast. Click a cover for the description and where to find a copy.</p>
+<label class="sr" for="q" style="position:absolute;left:-9999px">Search books</label>
+<input id="q" class="search" type="search" placeholder="Search by title or author" autocomplete="off">
+<p id="count" aria-live="polite"></p>
+</header>
+<main><ul class="grid" id="grid"></ul><p class="empty" id="empty" hidden>No books match that search. Try a shorter title or just an author's last name.</p></main>
+
+<button class="top" id="top" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg><span>Back to top</span></button>
+
+<dialog id="dlg" aria-labelledby="mt">
+<div class="m">
+<button class="x" id="close" aria-label="Close">&times;</button>
+<div class="cover" id="mc"></div>
+<div>
+<h2 id="mt"></h2><div class="by" id="ma"></div>
+<div class="desc" id="md"></div>
+<h3>Where to find it</h3>
+<div class="links" id="ml"></div>
+</div>
+</div>
+</dialog>
+
+<script>
+/* Paste your published Google Sheet CSV link between the quotes. Leave empty to use the built-in list. */
+const SHEET_CSV_URL="";
+let BOOKS=[{"t":"Abandoned London: Discover the hidden secrets of the city in photographs","a":["Katie Wignall"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/52730097.jpg"},{"t":"Aggrippina: Empress, Exile, Hustler, Whore","a":["Emma Southon"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/40977850.jpg"},{"t":"Alice's Adventures: Lewis Carroll in Popular Culture","a":["Will Brooker"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9780826414335-us.jpg"},{"t":"Amelia Dyer and the Baby Farm Murders","a":["Angela Buckley"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/29282645.jpg"},{"t":"Anatomy of Love: A Natural History of Mating, Marriage, and Why We Stray","a":["Helen Fisher"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/20707972.jpg"},{"t":"Anne Boleyn and Elizabeth I: The Mother and Daughter Who Changed History","a":["Tracy Borman"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/borman-tracy-anne-boleyn-elizabeth-i-the-mother-and-daughter-who-change.jpeg"},{"t":"Ashes and Stones: A Scottish Journey in Search of Witches and Witness","a":["Allyson Shaw"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/63006114.jpg"},{"t":"Athena to Barbie: Bodies, Archetypes, and Women's Search for Self","a":["Lenore Wright"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/71rhsjaq2l._sl1391_.jpg"},{"t":"Awakening the Ashes: An Intellectual History of the Haitian Revolution","a":["Marlene Daut"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9781469676845.jpg"},{"t":"Baby Let's Play House: Elvis Presley and the Women Who Loved Him","a":["Alanna Nash"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/oip.jpeg"},{"t":"Ballerina: Sex, Scandal and Suffering Behind the Symbol of Perfection","a":["Deirdre Kelly"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/61c280htq8l._sl1500_.jpg"},{"t":"Bawdy City: Commercial Sex and Regulation in Baltimore, 1790–1915","a":["Katie Hemphill"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/611bbhz7hol._sl1360_-1.jpg"},{"t":"The Beauty and the Terror: An Alternative History of the Italian Renaissance","a":["Catherine Fletcher"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/the-beauty-and-the-terror-by-catherine-fletcher.jpeg.optimal.jpeg"},{"t":"Becoming George: The Invention of George Sand","a":["Fiona Sampson"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/81sw5bmtftl._sl1500_.jpg"},{"t":"Bedlam: London and Its Mad","a":["Catharine Arnold"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/4128075.jpg"},{"t":"The Black Prince of Florence","a":["Catherine Fletcher"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9781448182084.jpg"},{"t":"Black Victorians: Hidden in History","a":["Keshia Abrahams","John Woolf"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/61228147.jpg"},{"t":"Blitzed: Drugs in Nazi Germany","a":["Norman Ohler"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/blitzed-drugs-in-the-third-reich-530x800-1.jpg"},{"t":"The Blood Countess: Murder, Betrayal and the Making of a Monster","a":["Shelley Puhak"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/231387353.jpg"},{"t":"Bombard the Headquarters! The Cultural Revolution in China","a":["Linda Jaivin"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/bombard-the-headquarters-online_0.jpg"},{"t":"Bonds of Blood: Gender, Lifecycle and Sacrifice in Aztec Culture","a":["Caroline Pennock"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/ebook9780230582330d4325_ukdxtzeub0.jpg"},{"t":"The Book of the Courtesans: A Catalogue of Their Virtues, Faults, Vices, Manners, Habits, Adornments, and Charms","a":["Benedetta Craveri"]},{"t":"Brave Hearted: The Women of the American West","a":["Katie Hickman"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/61986050.jpg"},{"t":"The Brothel of Pompeii: Sex, Class & Gender at the Margins of Roman Society","a":["Sarah Levin-Richardson"]},{"t":"Burns for Every Day of the Year","a":["Pauline Mackay"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/9781785302985_7f93ccec-d211-4130-b1f2-ad0107154d71_720x.webp"},{"t":"Buzz: The Stimulating History of the Sex Toy","a":["Hallie Lieberman"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/616cve60oal._sl1500_.jpg"},{"t":"Byron: A Life in Ten Letters","a":["Andrew Stauffer"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/71qlnnprmrl._sl1360_.jpg"},{"t":"Calling the Spirits: A History of Seances","a":["Lisa Morton"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/1-1.webp"},{"t":"Camp!: The Story of the Attitude that Conquered the World","a":["Paul Baker"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/61874g0dwtl._sl1500_.jpg"},{"t":"Catherine the Great: Love, Sex and Power","a":["Virginia Rounding"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/819pmndzujl._sl1500_.jpg"},{"t":"Celebrity Nation: How America Evolved into a Culture of Fans and Followers","a":["Landon Jones"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/62053066.jpg"},{"t":"Celibacy, Culture, and Society: Anthropology of Sexual Abstinence","a":["Elisa J. Sobo","Sandra M. Bell"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/070214.webp"},{"t":"Citizens and Sodomites: Persecution and Perception of Sodomy in the Southern Low Countries (1400–1700)","a":["Jonas Roelens"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/91w-sqtzmnl._sl1500_.jpg"},{"t":"City of Light, City of Shadows: Paris in the Belle Époque","a":["Mike Rapport"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/91oz6iaop-l._sl1500_.jpg"},{"t":"The Classification of Sex","a":["Donna Drucker"]},{"t":"Come As You Are","a":["Emily Nagoski"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/come-as-you-are-revised-and-updated-9781982165314_hr.jpg"},{"t":"The Concentration Camp Brothel: Forced Sexual Labor under Nazi Rule","a":["Robert Sommer"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9781531509903.jpg"},{"t":"Confinement: The Hidden History of Maternal Bodies in Nineteenth-Century Britain","a":["Jessica Cox"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/122978643.jpg"},{"t":"Contraception: A Concise History","a":["Donna Drucker"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/61chw-pv8ol._sl1500_.jpg"},{"t":"Courtesans: Money, Sex and Fame in the Nineteenth Century","a":["Katie Hickman"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/51sb3-a4x7l._sy445_sx342_ml2_.jpg"},{"t":"Crazy Old Ladies: The Story of Hag Horror","a":["Caroline Young"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/62587952.jpg"},{"t":"A Curious History of Sex","a":["Kate Lister"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9781783529711.width-1000.jpg"},{"t":"The Curse of the Marquis de Sade","a":["Joel Warner"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/61195290.jpg"},{"t":"The Dandy: A People's History of Sartorial Splendour","a":["Peter K. Andersson"]},{"t":"The Daughters of George III: Sisters and Princesses","a":["Catherine Curzon"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/1.webp"},{"t":"The Death of Stalin","a":["Sheila Fitzpatrick"]},{"t":"Deviant Maternity: Illegitimacy in Wales, c. 1680–1800","a":["Angela Muir"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/9781032174167.jpg"},{"t":"Dickensland: The Curious History of Dickens's London","a":["Lee Jackson"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/124011078.jpg"},{"t":"Dirty Old London","a":["Lee Jackson"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/712jizgooxl._sl1000_.jpg"},{"t":"The Disappearance of Lydia Harvey","a":["Julia Laite"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/1609502545-0.jpeg"},{"t":"Disgrace: Global Reflections on Sexual Violence","a":["Joanna Bourke"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/60557371.jpg"},{"t":"Do Admit","a":["Mimi Pond"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/91qqm5vpinl._sl1500_.jpg"},{"t":"Drag: A British History","a":["Jacob Bloomfield"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/9780520393325drag.jpeg"},{"t":"The Dress Diary: Secrets from a Victorian Woman's Wardrobe","a":["Kate Strasdin"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/62918250.jpg"},{"t":"Drinking in Victorian and Edwardian Britain: Beyond the Spectre of the Drunkard","a":["Thora Hands"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/978-3-319-92964-4.webp"},{"t":"Dynamics of Biocultural Diversity","a":["Elisa J. Sobo"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/81yxrqdhn4l._sl1500_.jpg"},{"t":"Edda Mussolini: The Most Dangerous Woman in Europe","a":["Caroline Moorehead"]},{"t":"Elixir: A Parisian Perfume House and the Quest for the Secret of Life","a":["Theresa Levitt"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/51hqrkke4ll._sl1000_.jpg"},{"t":"Elizabeth's Bedfellows: An Intimate History of the Queen's Court","a":["Anna Whitelock"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/10/9781408833643.jpg"},{"t":"Embers of the Hands: Hidden Histories of the Viking Age","a":["Eleanor Barraclough"]},{"t":"Emperor of Rome","a":["Mary Beard"]},{"t":"An English Affair: Sex, Class and Power in the Age of Profumo","a":["Richard Davenport-Hines"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/anenglishaffair.jpg"},{"t":"Erotic Exchanges: The World of Elite Prostitution in Eighteenth-Century Paris","a":["Nina Kushner"]},{"t":"Eve Bites Back: An Alternative History of English Literature","a":["Anna Beer"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/60320343.jpg"},{"t":"Exploring the Cultural Phenomenon of the Dick Pic","a":["Andrea Waling"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9781032502281.jpg"},{"t":"Exposed: The Greek and Roman Body","a":["Caroline Vout"]},{"t":"Fabulosa!: The Story of Polari, Britain's Secret Gay Language","a":["Paul Baker"]},{"t":"The Fall of the House of Byron: Scandal and Seduction in Georgian England","a":["Emily Brand"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/48615820.jpg"},{"t":"Fanny and Stella: The Young Men Who Shocked Victorian England","a":["Neil Mckenna"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/51i3b404yll__22651.jpg"},{"t":"Fat Shame: Stigma and the Fat Body in American Culture","a":["Amy Erdman Farrell"]},{"t":"The Fatal Lover: Mata Hari and the Myth of Women in Espionage","a":["Julie Wheelwright"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/screenshot-2026-09-24-at-9.47.52-am.png"},{"t":"A Fatal Thing Happened on the Way to the Forum: Murder in Ancient Rome","a":["Emma Southon"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/54776211.jpg"},{"t":"Fear: An Alternative History of the World","a":["Robert Peckham"]},{"t":"Fetish Style","a":["Frenchy Lunning"]},{"t":"The Fires of Lust: Sex in the Middle Ages","a":["Katherine Harvey"]},{"t":"The Five: The Untold Lives of the Women Killed by Jack the Ripper","a":["Hallie Rubenhold"]},{"t":"Flick: The Story of Female Pleasure","a":["Kate Lister"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9780857506443.jpg"},{"t":"The Floating Brothel: The Extraordinary True Story of an 18th-Century Ship and Its Cargo of Female Convicts","a":["Siân Rees"]},{"t":"FLOW: The Cultural Story of Menstruation","a":["Elissa Stein","Susan Kim"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/flow-en-elissa-stein-and-susan-kim.png"},{"t":"For His Eyes Only: The Women of James Bond","a":["Lisa Funnell"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/screenshot-2026-09-24-at-9.05.23-am.png"},{"t":"For the Record: On Sexuality and the Colonial Archive in India","a":["Anjali Arondekar"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/978-0-8223-4533-6_pr.webp"},{"t":"Gay Berlin: Birthplace of a Modern Identity","a":["Robert Beachy"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/19009333911.jpg"},{"t":"Geisha: The Secret History of a Vanishing World","a":["Lesley Downer"]},{"t":"Gender in the Ancient Near East","a":["Stephanie Budin"]},{"t":"Gentleman Jack: The Real Anne Lister","a":["Anne Choma"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/43980644.jpg"},{"t":"God's Own Gentlewoman: The Life of Margaret Paston","a":["Diane Watt"]},{"t":"Goddess with a Thousand Faces","a":["Jasmine Elmer"]},{"t":"Goddess: The Secret Lives of Marilyn Monroe","a":["Anthony Summers"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/421869.jpg"},{"t":"The Godmother: Murder, Vengeance, and the Bloody Struggle of Mafia Women","a":["Barbie Latza Nadeau"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/thegodmothermurdervengeance.jpg"},{"t":"Great and Horrible News: Murder and Mayhem in Early Modern Britain","a":["Blessin Adams"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/75523493.jpg"},{"t":"The Greedy Queen: Eating with Victoria","a":["Annie Gray"]},{"t":"Growing Up in the Ice Age","a":["April Nowell"]},{"t":"Hell's Half-Acre: The Untold Story of the Benders, America's First Serial Killer Family","a":["Susan Jonusas"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/58804246.jpg"},{"t":"Henry VIII and the Men Who Made Him","a":["Tracy Borman"]},{"t":"Hippocrates' Woman: Reading the Female Body in Ancient Greece","a":["Helen King"]},{"t":"A History of the Roman Empire in 21 Women","a":["Emma Southon"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/a-history-of-the-roman-empire-in-21-women-9780861542314_hr.jpg"},{"t":"A History of Women in 100 Objects","a":["Annabelle Hirsch"]},{"t":"History Stinks!: Poo Through the Ages","a":["Suzie Edge"]},{"t":"Hoax: Truth and Lies in the Age of Enlightenment","a":["Maddy Pelling"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/51newrutmel._sy445_sx342_ql70_ml2_.jpg"},{"t":"The Horde: How the Mongols Changed the World","a":["Marie Favereau"]},{"t":"How to Be a Renaissance Woman: The Untold History of Beauty and Female Creativity","a":["Jill Burke"]},{"t":"A Human History of Emotion: How the Way We Feel Built the World We Know","a":["Richard Firth-Godbehere"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/716crotw-vl.webp"},{"t":"Illegitimacy, Family, and Stigma in England, 1660–1834","a":["Kate Gibson"]},{"t":"Immaculate Forms: A History of the Female Body in Four Parts","a":["Helen King"]},{"t":"In Search of Mary Shelley: The Girl Who Wrote Frankenstein","a":["Fiona Sampson"]},{"t":"The Index of Prohibited Books: Four Centuries of Struggle over Word and Image for the Greater Glory of God","a":["Robin Vose"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/60557403.jpg"},{"t":"Inside the World of Bridgerton: True Stories of Regency High Society","a":["Catherine Curzon"]},{"t":"The Invention of Murder: How the Victorians Revelled in Death and Detection and Created Modern Crime","a":["Judith Flanders"]},{"t":"Ireland and the Magdalene Laundries: A Campaign for Justice","a":["Katherine O’Donnell","Maeve O’Rourke","James M. Smith"]},{"t":"It's a Continent","a":["Astrid Madimba","Chinny Ukata"]},{"t":"Killer Looks: The Forgotten History of Plastic Surgery in Prisons","a":["Zara Stone"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/56361653.jpg"},{"t":"The Kinky Renaissance","a":["Joseph Gamble","Gillian Knoll"]},{"t":"Kitsch!: Cultural politics and taste","a":["Ruth Holliday","Tracey Potts"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/71kk4acpnl._sl1500_.jpg"},{"t":"Lady Caroline Lamb: A Biography","a":["Paul Douglass"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/334054.jpg"},{"t":"Lady Killers: Deadly Women Throughout History","a":["Tori Telfer"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/1000049177.jpg"},{"t":"Language, Sexism and Misogyny","a":["Deborah Cameron"]},{"t":"Lascivious Bodies: A Sexual History of the Eighteenth Century","a":["Julie Peakman"]},{"t":"Last Call at the Hotel Imperial: The Reporters Who Took on a World at War","a":["Deborah Cohen"]},{"t":"The Last Highlander: Scotland's Most Notorious Clan Chief, Rebel and Double Agent","a":["Sarah Fraser"]},{"t":"Life in the Georgian Court","a":["Catherine Curzon"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/29275292.jpg"},{"t":"Life Lessons from Historical Women","a":["Eleanor Morton"]},{"t":"The Life of the Author: William Shakespeare","a":["Anna Beer"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/81daf5rthfl._sl1500_.jpg"},{"t":"Look Up London: Discover the details you have never noticed before in 10 walks","a":["Katie Wignall"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/62038631.jpg"},{"t":"Loving Animals: On Bestiality, Zoophilia and Post-Human Love","a":["Joanna Bourke"]},{"t":"Loving Sylvia Plath: A Reclamation","a":["Emily Van Dyne"]},{"t":"Mademoiselle: Coco Chanel and the Pulse of History","a":["Rhonda K. Garelick"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/078ce29b23fd1189c7f86ec50b9930a260590665.webp"},{"t":"Margaret Beaufort: Survivor, Rebel, Kingmaker","a":["Lauren Johnson"]},{"t":"Masquerade: Unmasking Georgian London","a":["Meghan Kobza"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/screenshot-2026-09-24-at-9.57.21-am.png"},{"t":"Men at War: Loving, Lusting, Fighting, Remembering 1939–1945","a":["Luke Turner"]},{"t":"The Menopause Manifesto","a":["Jennifer Gunter"]},{"t":"Milk: An Intimate History of Breastfeeding","a":["Joanna Wolfarth"]},{"t":"The Mirror and the Palette: Rebellion, Revolution and Resilience: 500 Years of Women's Self-Portraits","a":["Jennifer Higgie"]},{"t":"Mistresses: Sex and Scandal at the Court of Charles II","a":["Linda Porter"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/49212483.jpg"},{"t":"Mortal Monarchs: 1000 Years of Royal Deaths","a":["Suzie Edge"]},{"t":"Mussolini's Daughter: The Most Dangerous Woman in Europe","a":["Caroline Moorehead"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/s579659167761174226_p11722_i1_w1664.webp"},{"t":"The Myth of Mars and Venus: Do Men and Women Really Speak Different Languages?","a":["Deborah Cameron"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9780191650543_p0.webp"},{"t":"Naked Feminism: Breaking the Cult of Female Modesty","a":["Victoria Bateman"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/118582563.jpg"},{"t":"Necropolis: Disease, Power, and Capitalism in the Cotton Kingdom","a":["Kathryn Olivarius"]},{"t":"Nefertiti's Face: The Creation of an Icon","a":["Joyce Tyldesley"]},{"t":"Normal Women - 900 Years of Making History","a":["Philippa Gregory"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/mmb63uuhknv9bk4oid3pasu9guutlnjgiwercily.jpg"},{"t":"Off With Her Head: Three Thousand Years of Demonising Women in Power","a":["Eleanor Herman"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/59811263.jpg"},{"t":"The Once and Future Sex: Going Medieval on Women's Roles in Society","a":["Eleanor Janega"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/img_5253.jpeg"},{"t":"Our Man in Rome: Henry VIII and his Italian Ambassador","a":["Catharine Fletcher"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/91pu5e3s1tl._sl1500_.jpg"},{"t":"Outrageous: The Story of Section 28 and Britain's Battle for LGBT Education","a":["Paul Baker"]},{"t":"The Pagan Rituals of the British Isles","a":["Ronald Hutton"]},{"t":"Painted Faces: A Colourful History of Make-Up","a":["Susan Stewart"]},{"t":"Painted People: 5,000 Years of Tattooed History from Sailors and Socialites to Mummies and Kings","a":["Matt Lodder"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/71yu9kq-tul._sl1500_.jpg"},{"t":"The Palace: From the Tudors to the Windsors, 500 Years of History at Hampton Court","a":["Gareth Russell"]},{"t":"Palaces of Pleasure","a":["Lee Jackson"]},{"t":"Patient Zero and the Making of the AIDS Epidemic","a":["Richard McKay"]},{"t":"The Patriarchs: How Men Came to Rule","a":["Angela Saini"]},{"t":"Penning Poison","a":["Emily Cockayne"]},{"t":"Phryne: A Life in Fragments","a":["Melissa Funke"]},{"t":"The Pirates' Code: Laws and Life Aboard Ship","a":["Rebecca Simon"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/62622017.jpg"},{"t":"Pleasure Palaces","a":["Lee Jackson"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/41833052.jpg"},{"t":"The Political Clinic: Psychoanalysis and Social Change in the Twentieth Century","a":["Carolyn Laubender"]},{"t":"Polymath: The Life and Professions of Dr Alex Comfort, Author of The Joy of Sex","a":["Eric Laursen"]},{"t":"Pretended, Schools and Section 28: Historical, Cultural and Personal Perspectives","a":["Catherine Lee"]},{"t":"Pure Wit: The Revolutionary Life of Margaret Cavendish","a":["Francesca Peacock"]},{"t":"Queen James: A New History About the Life and Loves of Britain's First King, James Stuart","a":["Gareth Russell"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/912ixeppydl._sl1500_.jpg"},{"t":"Queer Georgians: A Hidden History of Lovers, Lawbreakers and Homemakers","a":["Anthony Delaney"]},{"t":"The Queer Thing About Sin: Why the West Came to Hate Queer Love","a":["Harry Tanner"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/sdc_3445751_2025-21-7-12-31-51.jpg"},{"t":"Rasputin: A Short Life","a":["Frances Welch"]},{"t":"Rasputin: Faith, Power, and the Twilight of the Romanovs","a":["Douglas Smith"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/28116769.jpg"},{"t":"Reach for the Stars: 1996–2006: Fame, Fallout and Pop's Final Party","a":["Michael Cragg"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/71ul2567d2l._sl1500_.jpg"},{"t":"The Real Mozart: The Original King of Pop","a":["Judith Grohmann"]},{"t":"The Real Queen Charlotte","a":["Catherine Curzon"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/real-queen-charlotte-curzon.jpg"},{"t":"Rebel of the Regency: The Scandalous Saga of Caroline of Brunswick, Britain's Queen Without a Crown","a":["Ann Foster"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/718dx3df6bl._sl1500_.jpg"},{"t":"Red Lipstick: An Ode to a Beauty Icon","a":["Rachel Felder"]},{"t":"The Red Widow: The Scandal that Shook Paris and the Woman Behind it All","a":["Sarah Horowitz"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9781728226323.jpeg"},{"t":"Red: A History of the Redhead","a":["Jacky Colliss Harvey"]},{"t":"Redeeming the Kamasutra","a":["Wendy Doniger"]},{"t":"River Kings: A New History of the Vikings from Scandinavia to the Silk Road","a":["Cat Jarman"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/53242328.jpg"},{"t":"Rosemary: The Hidden Kennedy Daughter","a":["Kate Clifford Larson"]},{"t":"Savage Shores: The Story of Britain's Empire in the Age of Discovery","a":["Caroline Dodds Pennock"]},{"t":"The Scandal of the Century: And Other Writings","a":["María Moreno"]},{"t":"The Science of Kissing","a":["Sheril Kirshenbaum"]},{"t":"The Secret History of Georgian London: How the Wages of Sin Shaped the Capital","a":["Dan Cruickshank"]},{"t":"Selling Sex: A Hidden History of Prostitution","a":["Rae Frances"]},{"t":"Serving Herself: The Life and Times of Althea Gibson","a":["Ashley Brown"]},{"t":"Servus: How Slavery Made the Roman Empire","a":["Emma Southon"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/237860372.jpg"},{"t":"Sex Dolls at Sea: Imagined Histories of Sexual Technologies","a":["Bo Ruberg"]},{"t":"Sex with Presidents: The Ins and Outs of Love and Lust in the White House","a":["Eleanor Herman"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/9780063028951.jpg"},{"t":"Sexuality in Medieval Europe: Doing Unto Others","a":["Ruth Mazo Karras"]},{"t":"Shadowlands: A Journey Through Lost Britain","a":["Matthew Green"]},{"t":"Shapely Ankle Preferr'd: A History of the Lonely Hearts Advertisement","a":["Francesca Beauman"]},{"t":"A Short History of Queer Women","a":["Kirsty Loehr"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/60320342.jpg"},{"t":"The Shortest History of China","a":["Linda Jaivin"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/56081808.jpg"},{"t":"Single and Psycho: How Pop Culture Created the Unstable Single Woman","a":["Caroline Young"]},{"t":"Some Men in London: Queer Life, 1945–1959","a":["Peter Parker"]},{"t":"Stampede: Gold Fever and Disaster in the Klondike","a":["Brian Castner"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/54895271.jpg"},{"t":"Stonewall: Breaking Out in the Fight for Gay Rights","a":["Ann Bausum"]},{"t":"Story of a Murder","a":["Hallie Rubenhold"]},{"t":"The Story of the Bayeux Tapestry: Unraveling the Norman Conquest","a":["Dave Musgrove","Caroline McNulty"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/51482463.jpg"},{"t":"Straight: The Surprisingly Short History of Heterosexuality","a":["Hanne Blank"]},{"t":"The Sun Rising: James I and the Dawn of a Global Britain","a":["Anna Whitelock"]},{"t":"Superstition: The History of Common Folk Beliefs","a":["Sally Coulthard"]},{"t":"The Sweetness of Venus","a":["Sarah Chadwick"]},{"t":"The Temple of Perfection","a":["Eric Chaline"]},{"t":"Thread: A Cesarean Story of Myth, Magic, and Medicine","a":["Hannah Marsh"]},{"t":"Tomorrow Perhaps the Future: Writers, Outsiders, and the Spanish Civil War","a":["Sarah Watling"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/61965422.jpg"},{"t":"The Trial of the Templars","a":["Malcolm Barber"]},{"t":"Turned On: Science, Sex and Robots","a":["Kate Devlin"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/547x840.jpg"},{"t":"Uncovering Dinosaur Behaviour: What They Did and How We Know","a":["David Hone"]},{"t":"Understanding Asexuality","a":["Tony Bogaert"]},{"t":"Unwell Women: A Journey Through Medicine and Myth in a Man-Made World","a":["Elinor Cleghorn"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/55502857.jpg"},{"t":"The Venus Fixers: The Remarkable Story of the Allied Soldiers Who Saved Italy's Art During World War II","a":["Ilaria Dagnini Brey"]},{"t":"Venus Noire: Black Women and Colonial Fantasies in Nineteenth-Century France","a":["Robin Mitchell"]},{"t":"Virgins: A Cultural History","a":["Anke Bernau"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/6065793.jpg"},{"t":"The Virtues of Underwear: Modesty, Flamboyance and Filth","a":["Nina Edwards"]},{"t":"Vital Organs","a":["Suzie Edge"]},{"t":"What Pornography Knows: Sex and Social Protest since the Eighteenth Century","a":["Kathleen Lubey"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/62014011-1.jpg"},{"t":"When Abortion Was a Crime: Women, Medicine, and Law in the United States, 1867-1973","a":["Leslie J. Reagan"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/160570.jpg"},{"t":"The Wicked Boy: The Mystery of a Victorian Child Murderer","a":["Kate Summerscale"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/27774749.jpg"},{"t":"Witchcraft: A History in 13 Trials","a":["Marion Gibson"]},{"t":"With My Own Hand: The Secret Life of Marie Maitland, Scotland's Sixteenth-Century Sappho","a":["Ashley Douglas"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/91bw8hg0hol._sl1500_.jpg"},{"t":"The Woman Who Would Be King: Hatshepsut's Rise to Power in Ancient Egypt","a":["Kara Cooney"]},{"t":"A Woman's Game: The Rise, Fall, and Rise Again of Women's Soccer","a":["Suzanne Wrack"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/59485859.jpg"},{"t":"Woman's Lore: 4,000 Years of Sirens, Serpents and Succubi","a":["Sarah Clegg"]},{"t":"The Women Who Flew for Hitler: The True Story of Hitler's Valkyries in World War II","a":["Clare Mulley"]},{"t":"The Women with Silver Wings: The Inspiring True Story of the Women Airforce Service Pilots of World War II","a":["Katherine Sharp Landdeck"]},{"t":"The Wonders: Lifting the Curtain on the Freak Show, Circus and Victorian Age","a":["John Woolf"]},{"t":"Wrong Women: Selling Sex in Monto, Dublin's Forgotten Red Light District","a":["Caroline West"]},{"t":"The Years of the Wizard: The Strange History and Home Life of Renaissance Magicians","a":["Rachel Morris"]},{"t":"Young and Damned and Fair: The Life of Catherine Howard, Fifth Wife of King Henry VIII","a":["Gareth Russell"],"c":"https://betwixtbooklist.wordpress.com/wp-content/uploads/2026/09/55728291.jpg"},{"t":"Your Cheeky Guide to the Roman Empire","a":["Peta Greenfield","Fiona Radford"]}];
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mainTitle=t=>t.split(":")[0].trim();
+const authors=b=>b.a.join(", ");
+const cache=(()=>{try{return JSON.parse(localStorage.getItem("bts_v2")||"{}")}catch(e){return{}}})();
+const save=()=>{try{localStorage.setItem("bts_v2",JSON.stringify(cache))}catch(e){}};
+
+function placeholder(b){return `<div class="ph">${esc(mainTitle(b.t))}<span>${esc(authors(b))}</span></div>`}
+function coverURL(b,size){
+  if(b.c)return /wordpress\.com|wp\.com/.test(b.c)&&!b.c.includes("?")?b.c+"?w="+(size==="L"?700:400):b.c;
+  const d=cache[b.t];
+  return d&&d.cover?d.cover.replace("-M.","-"+size+"."):"";
+}
+function coverHTML(b,size){const u=coverURL(b,size);return u?`<img src="${u}" alt="Cover of ${esc(b.t)}" loading="lazy" data-i="${b.i}" onerror="coverFailed(this)">`:placeholder(b)}
+function coverFailed(img){img.parentNode.innerHTML=placeholder(BOOKS[+img.dataset.i])}
+const sortKey=t=>t.toLowerCase().replace(/^(the|a|an)\s+/,"");
+function indexBooks(){BOOKS.sort((x,y)=>sortKey(x.t).localeCompare(sortKey(y.t)));BOOKS.forEach((b,i)=>b.i=i)}
+indexBooks();
+
+/* ---- lookups: Open Library Covers API for covers; Open Library / Google Books for descriptions ---- */
+async function getJSON(u){const r=await fetch(u);if(!r.ok)throw 0;return r.json()}
+async function lookup(b){
+  if(cache[b.t])return cache[b.t];
+  const out={};
+  const last=(b.a[0]||"").split(" ").pop();
+  try{
+    const q=new URLSearchParams({title:mainTitle(b.t),author:b.a[0]||"",limit:5,fields:"key,cover_i"});
+    let j=await getJSON("https://openlibrary.org/search.json?"+q);
+    if(!j.docs.length){const q2=new URLSearchParams({q:mainTitle(b.t)+" "+last,limit:5,fields:"key,cover_i"});j=await getJSON("https://openlibrary.org/search.json?"+q2)}
+    if(j.docs[0])out.olKey=j.docs[0].key;
+    const withCover=j.docs.find(d=>d.cover_i);
+    if(withCover)out.cover=`https://covers.openlibrary.org/b/id/${withCover.cover_i}-M.jpg?default=false`;
+  }catch(e){}
+  cache[b.t]=out;save();return out;
+}
+async function description(b){
+  const d=await lookup(b);
+  if(d.desc)return d.desc;
+  if(d.olKey){
+    try{const w=await getJSON("https://openlibrary.org"+d.olKey+".json");
+      let t=w.description;if(t&&t.value)t=t.value;
+      if(t){d.desc=t.split(/\n-{3,}|\n\n\(?\[?Source/)[0].replace(/\[([^\]]+)\]\([^)]+\)/g,"$1").trim();cache[b.t]=d;save();return d.desc}
+    }catch(e){}
+  }
+  try{
+    const last=(b.a[0]||"").split(" ").pop();
+    const j=await getJSON("https://www.googleapis.com/books/v1/volumes?maxResults=1&q="+encodeURIComponent(`intitle:${mainTitle(b.t)} inauthor:${last}`));
+    const v=j.items&&j.items[0]&&j.items[0].volumeInfo;
+    if(v&&v.description){d.desc=v.description.replace(/<[^>]+>/g,"");cache[b.t]=d;save();return d.desc}
+  }catch(e){}
+  return "";
+}
+
+/* ---- grid with lazy loading ---- */
+const grid=$("grid");
+const queue=[];let active=0;
+function pump(){while(active<4&&queue.length){const {b,el}=queue.shift();active++;
+  lookup(b).then(()=>{el.querySelector(".cover").innerHTML=coverHTML(b,"M")}).finally(()=>{active--;pump()})}}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);queue.push({b:BOOKS[+e.target.dataset.i],el:e.target});pump()}}),{rootMargin:"400px"});
+
+function buildGrid(){
+grid.innerHTML="";queue.length=0;
+BOOKS.forEach((b,i)=>{
+  const li=document.createElement("li");li.dataset.i=i;
+  li.innerHTML=`<button class="book" aria-label="${esc(b.t)} by ${esc(authors(b))}"><div class="cover">${coverHTML(b)}</div><div class="title">${esc(mainTitle(b.t))}</div><div class="by">${esc(authors(b))}</div></button>`;
+  li.firstChild.onclick=()=>openBook(b);
+  grid.appendChild(li);if(!b.c)io.observe(li);
+});
+}
+buildGrid();
+
+/* ---- search ---- */
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g,"");
+function filter(){
+  const q=norm($("q").value).trim();let n=0;
+  [...grid.children].forEach(li=>{const b=BOOKS[+li.dataset.i];const hit=!q||norm(b.t+" "+authors(b)).includes(q);li.hidden=!hit;if(hit)n++});
+  $("count").textContent=q?`${n} of ${BOOKS.length} books`:`${BOOKS.length} books`;
+  $("empty").hidden=n>0;
+}
+$("q").addEventListener("input",filter);filter();
+
+/* ---- modal ---- */
+const dlg=$("dlg");
+async function openBook(b){
+  $("mt").textContent=b.t;$("ma").textContent="by "+authors(b);
+  $("mc").innerHTML=coverHTML(b,"L");
+  $("md").textContent="Loading description…";
+  const q=encodeURIComponent(mainTitle(b.t)+" "+b.a[0]);
+  $("ml").innerHTML=[
+    ["Bookshop.org","https://bookshop.org/search?keywords="+q],
+    ["Borrow from a library","https://www.worldcat.org/search?q="+q],
+    ["Libby / OverDrive","https://www.overdrive.com/search?q="+q],
+    ["Goodreads","https://www.goodreads.com/search?q="+q],
+    ["Open Library","https://openlibrary.org/search?q="+q]
+  ].map(([n,u,m])=>`<a ${m?'class="main" ':''}href="${u}" target="_blank" rel="noopener">${n}</a>`).join("");
+  document.documentElement.classList.add("lock");
+  dlg.showModal();
+  const d=await lookup(b);
+  $("mc").innerHTML=coverHTML(b,"L");
+  if(d.olKey)$("ml").lastChild.href="https://openlibrary.org"+d.olKey;
+  const t=await description(b);
+  if(dlg.open&&$("mt").textContent===b.t)$("md").textContent=t||"No description is available for this book yet. Use the links below to find out more.";
+}
+dlg.addEventListener("close",()=>document.documentElement.classList.remove("lock"));
+$("close").onclick=()=>dlg.close();
+dlg.addEventListener("click",e=>{if(e.target===dlg)dlg.close()});
+/* ---- live list from Google Sheet ---- */
+function parseCSV(s){const rows=[];let r=[],f="",q=false;
+  for(let i=0;i<s.length;i++){const c=s[i];
+    if(q){if(c==='"'){if(s[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"')q=true;else if(c===","){r.push(f);f=""}
+    else if(c==="\n"||c==="\r"){if(c==="\r"&&s[i+1]==="\n")i++;r.push(f);rows.push(r);r=[];f=""}
+    else f+=c}
+  if(f||r.length){r.push(f);rows.push(r)}return rows}
+function cleanAuthors(a){return a.replace(/\((foreword|introduction|ed\.?|editor)[^)]*\)/gi,"").split(/\s*(?:;|,|&|\band\b)\s*/).map(p=>p.replace(/^(dr\.?|professor|prof\.?)\s+/i,"").trim()).filter(p=>p&&p.toLowerCase()!=="others")}
+async function loadSheet(){
+  if(!SHEET_CSV_URL)return;
+  try{
+    const res=await fetch(SHEET_CSV_URL);if(!res.ok)return;
+    const rows=parseCSV(await res.text());
+    const head=rows[0].map(h=>h.trim().toLowerCase());
+    const ti=head.findIndex(h=>h.includes("title")),ai=head.findIndex(h=>h.startsWith("author")),ci=head.findIndex(h=>h.includes("cover"));
+    if(ti<0)return;
+    const seen=new Set(),list=[];
+    rows.slice(1).forEach(r=>{
+      const t=(r[ti]||"").replace(/[\u2018\u2019]/g,"'").replace(/\s+:/g,":").trim();if(!t)return;
+      const k=t.toLowerCase().replace(/[^a-z0-9]/g,"");if(seen.has(k))return;seen.add(k);
+      const b={t,a:cleanAuthors(r[ai]||"")};const c=ci>=0?(r[ci]||"").trim():"";if(c)b.c=c;list.push(b)});
+    if(list.length){BOOKS=list;indexBooks();buildGrid();filter()}
+  }catch(e){}
+}
+loadSheet();
+
+/* ---- back to top ---- */
+const topBtn=$("top");
+addEventListener("scroll",()=>topBtn.classList.toggle("show",scrollY>500),{passive:true});
+topBtn.onclick=()=>{const calm=matchMedia("(prefers-reduced-motion:reduce)").matches;scrollTo({top:0,behavior:calm?"auto":"smooth"});document.querySelector("h1").focus({preventScroll:true})};
+</script>
+</body>
+</html>
