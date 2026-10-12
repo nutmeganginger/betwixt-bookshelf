@@ -207,8 +207,7 @@ async function openBook(b){
     ["Storygraph","https://www.storygraph.com/browse?search_term="+q],
     ["Borrow from a library","https://www.worldcat.org/search?q="+q],
     ["Libby / OverDrive","https://www.overdrive.com/search?q="+q],
-    ["Goodreads","https://www.goodreads.com/search?q="+q],
-    ["Open Library","https://openlibrary.org/search?q="+q]
+    ["Goodreads","https://www.goodreads.com/search?q="+q]
   ].map(([n,u,m])=>`<a ${m?'class="main" ':''}href="${u}" target="_blank" rel="noopener">${n}</a>`).join("");
   document.documentElement.classList.add("lock");
   dlg.showModal();
