@@ -208,6 +208,8 @@ async function openBook(b){
     ["Libby / OverDrive","https://www.overdrive.com/search?q="+q],
     ["Goodreads","https://www.goodreads.com/search?q="+q],
     ["Open Library","https://openlibrary.org/search?q="+q]
+    ["Storygraph","https://storygraph.com/search?query="+q],
+    ["Google Books","https://www.google.com/search?tbm=bks&q="+q]
   ].map(([n,u,m])=>`<a ${m?'class="main" ':''}href="${u}" target="_blank" rel="noopener">${n}</a>`).join("");
   document.documentElement.classList.add("lock");
   dlg.showModal();
