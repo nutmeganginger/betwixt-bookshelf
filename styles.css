@@ -4,18 +4,28 @@
 }
 
 @font-face {
-    font-family: 'Coluna';
-    src: url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.woff') format('woff');
-    font-style: bold;
+    font-family: 'Coluna-CondensedBold';
+    src:url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.woff') format('woff'),
+        url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.svg#Coluna-CondensedBold') format('svg'),
+        url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.eot'),
+        url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.eot?#iefix') format('embedded-opentype'); 
+    font-weight: normal;
+    font-style: normal;
 }
 
 @font-face {
-    font-family: "SlimSansSerif";
-    src: url("fonts/SlimSansSerif-Bold.ttf") format("truetype");
-    font-weight: 700;
+    font-family: 'SlimSansSerif Regular';
     font-style: normal;
-    font-display: swap
-}
+    font-weight: normal;
+    src: url('assets/font/webfonts_SlimSansSerif/SlimSansSerif.woff') format('woff');
+    }
+    
+@font-face {
+    font-family: 'SlimSansSerif Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: local('SlimSansSerif Bold'), url('assets/font/webfonts_SlimSansSerif/SlimSansSerif-Bold.woff') format('woff');
+    }
 
 h1 {
     font-family: 'Coluna', sans-serif;
