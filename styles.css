@@ -6,3 +6,17 @@
     background-color: #f0f0f0;
     cursor: pointer;
 }
+
+@font-face {
+    font-family: 'Coluna';
+    src: url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.woff') format('woff');
+    font-style: normal;
+}
+
+h1 {
+    font-family: 'Coluna', sans-serif;
+    font-weight: bold;
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
