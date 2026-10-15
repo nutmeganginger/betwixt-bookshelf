@@ -5,10 +5,10 @@
 
 @font-face {
     font-family: 'Coluna-CondensedBold';
-    src:url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.woff') format('woff'),
+    src: url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.woff') format('woff'),
         url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.svg#Coluna-CondensedBold') format('svg'),
         url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.eot'),
-        url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.eot?#iefix') format('embedded-opentype'); 
+        url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.eot?#iefix') format('embedded-opentype');
     font-weight: normal;
     font-style: normal;
 }
@@ -18,14 +18,14 @@
     font-style: normal;
     font-weight: normal;
     src: url('assets/font/webfonts_SlimSansSerif/SlimSansSerif.woff') format('woff');
-    }
-    
+}
+
 @font-face {
     font-family: 'SlimSansSerif Bold';
     font-style: normal;
     font-weight: normal;
     src: local('SlimSansSerif Bold'), url('assets/font/webfonts_SlimSansSerif/SlimSansSerif-Bold.woff') format('woff');
-    }
+}
 
 :root {
     --ink: #16141a;
@@ -301,4 +301,114 @@ dialog::backdrop {
     font-size: 1.4rem;
     cursor: pointer;
     color: var(--ink)
+}
+
+* {
+    box-sizing: border-box
+}
+
+html {
+    scrollbar-gutter: stable
+}
+
+html.lock,
+html.lock body {
+    overflow: hidden
+}
+
+@media(max-width:1000px) {
+    .grid {
+        grid-template-columns: repeat(4, 1fr)
+    }
+}
+
+@media(max-width:760px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px 16px
+    }
+}
+
+@media(max-width:600px) {
+    .m {
+        grid-template-columns: 1fr;
+        padding: 24px
+    }
+
+    .m .cover {
+        max-width: 180px
+    }
+
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 28px 16px
+    }
+
+    header {
+        padding-top: 48px
+    }
+}
+
+.top {
+    position: fixed;
+    right: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 13px;
+    border: 0;
+    border-radius: 24px;
+    background: var(--accent);
+    color: #000;
+    font: 600 .95rem var(--sans);
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity .2s, transform .2s, visibility .2s
+}
+
+.top.show {
+    opacity: 1;
+    visibility: visible;
+    transform: none
+}
+
+.top svg {
+    flex: none;
+    width: 22px;
+    height: 22px
+}
+
+.top span {
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0;
+    margin-left: 0;
+    transition: max-width .25s ease, opacity .2s, margin .25s
+}
+
+.top:hover span,
+.top:focus-visible span {
+    max-width: 110px;
+    opacity: 1;
+    margin-left: 8px
+}
+
+.top:hover,
+.top:focus-visible {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .25), var(--glow)
+}
+
+@media(prefers-reduced-motion:reduce) {
+
+    .cover,
+    .top,
+    .top span {
+        transition: none
+    }
 }
