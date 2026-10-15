@@ -1,6 +1,4 @@
-.button {
-
-}
+.button {}
 
 .button:hover {
     background-color: #f0f0f0;
@@ -10,7 +8,15 @@
 @font-face {
     font-family: 'Coluna';
     src: url('assets/font/webfonts_Coluna-CondensedBold/Coluna-CondensedBold.ttf.woff') format('woff');
+    font-style: bold;
+}
+
+@font-face {
+    font-family: "SlimSansSerif";
+    src: url("fonts/SlimSansSerif-Bold.ttf") format("truetype");
+    font-weight: 700;
     font-style: normal;
+    font-display: swap
 }
 
 h1 {
@@ -19,4 +25,19 @@ h1 {
     font-size: 2.5rem;
     color: #333;
     margin-bottom: 1rem;
+}
+
+
+
+:root {
+    --ink: #16141a;
+    --mute: #6b6874;
+    --line: #e8e6ec;
+    --bg: #fff;
+    --soft: #f6f5f8;
+    --accent: #F30650;
+    --glow: 0 0 2px 2px rgba(243, 6, 80, .5);
+    --r: 6px;
+    --display: "SlimSansSerif", "Figtree", system-ui, sans-serif;
+    --sans: "proxima-nova", "Proxima Nova", "Figtree", system-ui, sans-serif
 }
