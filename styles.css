@@ -38,15 +38,14 @@
     --accent: #F30650;
     --glow: 0 0 2px 2px rgba(243, 6, 80, .5);
     --r: 6px;
-    --display: "SlimSansSerif", "Figtree", system-ui, sans-serif;
-    --sans: "proxima-nova", "Proxima Nova", "Figtree", system-ui, sans-serif
 }
 
 body {
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font: 16px/1.5 var(--sans)
+    font-family: 'SlimSansSerif Regular';
+    font: 16px/1.5;
 }
 
 button,
@@ -71,7 +70,7 @@ h1 {
 header p {
     margin: 0 0 20px;
     color: var(--mute);
-    font: 400 1.1rem/1.5 var(--sans);
+    font: 400 1.1rem/1.5;
     max-width: 52ch
 }
 
@@ -191,11 +190,11 @@ main {
     justify-content: space-between;
     color: #000;
     background: var(--accent);
-    font: 700 .95rem/1.2 var(--sans)
+    font: 700 .95rem/1.2
 }
 
 .ph span {
-    font: 500 .8rem var(--sans)
+    font: 500 .8rem
 }
 
 .title {
@@ -247,7 +246,8 @@ dialog::backdrop {
 }
 
 .m h2 {
-    font: 700 1.7rem/1.1 var(--display);
+    font-family: 'SlimSansSerif Bold';
+    font: 700 1.7rem/1.1;
     letter-spacing: -.01em;
     margin: 0 0 6px
 }
@@ -258,7 +258,7 @@ dialog::backdrop {
 }
 
 .desc {
-    font: 400 1rem/1.6 var(--sans);
+    font: 400 1rem/1.6 ;
     max-height: 240px;
     overflow: auto;
     margin: 0 0 20px;
@@ -266,7 +266,7 @@ dialog::backdrop {
 }
 
 .m h3 {
-    font: 700 1rem var(--sans);
+    font: 700 1rem;
     margin: 0 0 10px
 }
 
@@ -364,7 +364,8 @@ html.lock body {
     border-radius: 24px;
     background: var(--accent);
     color: #000;
-    font: 600 .95rem var(--sans);
+    font-family: 'SlimSansSerif Bold';
+    font: 600 .95rem;
     cursor: pointer;
     box-shadow: 0 4px 14px rgba(0, 0, 0, .25);
     opacity: 0;
