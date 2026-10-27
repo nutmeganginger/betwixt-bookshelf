@@ -1,5 +1,3 @@
-
-
 .button:hover {
     background-color: #f0f0f0;
     cursor: pointer;
@@ -19,15 +17,17 @@
     font-family: 'SlimSansSerif Regular';
     font-style: normal;
     font-weight: normal;
-    src: url('assets/font/webfonts_SlimSansSerif/SlimSansSerif.woff') format('woff');
+    src: local('SlimSansSerif Regular'), url('SlimSansSerif.woff') format('woff');
 }
+
 
 @font-face {
     font-family: 'SlimSansSerif Bold';
     font-style: normal;
     font-weight: normal;
-    src: local('SlimSansSerif Bold'), url('assets/font/webfonts_SlimSansSerif/SlimSansSerif-Bold.woff') format('woff');
+    src: local('SlimSansSerif Bold'), url('SlimSansSerif-Bold.woff') format('woff');
 }
+
 
 :root {
     --ink: #16141a;
@@ -260,7 +260,7 @@ dialog::backdrop {
 }
 
 .desc {
-    font: 400 1rem/1.6 ;
+    font: 400 1rem/1.6;
     max-height: 240px;
     overflow: auto;
     margin: 0 0 20px;
